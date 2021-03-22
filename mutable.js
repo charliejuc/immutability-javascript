@@ -8,9 +8,10 @@ const addNumberToStrings = (stringArr) => stringArr.map((value) => `${value}-${n
 const arr = ['hi', 'bye', 'new', 'old', 'change', 'go']
 
 console.log(arr)
-console.log(addNumberToStrings(arr))
+// outcome result depends of "num" value, this value is not available outside this file
+console.log(addNumberToStrings(arr)[0] === `${arr[0]}-1`)
 
-// we need to track when we updated "num"
 increaseNumber()
 increaseNumber()
-console.log(addNumberToStrings(arr))
+// "num" could have been updated N times in our code, how do we know current value to test if it is working properly?
+console.log(addNumberToStrings(arr)[0] === `${arr[0]}-???`)

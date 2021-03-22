@@ -1,11 +1,16 @@
 'use strict'
 
-const arr = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+let num = 1
+const increaseNumber = () => num += 1
 
-const randomComparator = (a, b) => Math.random() > .5 ? a - b : b - a
-const orderedArr = arr.sort(randomComparator)
+const addNumberToStrings = (stringArr) => stringArr.map((value) => `${value}-${num}`)
 
-arr.push(999)
+const arr = ['hi', 'bye', 'new', 'old', 'change', 'go']
 
 console.log(arr)
-console.log(orderedArr)
+console.log(addNumberToStrings(arr))
+
+// we need to track when we updated "num"
+increaseNumber()
+increaseNumber()
+console.log(addNumberToStrings(arr))

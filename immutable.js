@@ -1,18 +1,42 @@
 'use strict'
 
-const num = 1
-const addNumberToStringsV1 = (stringArr) => stringArr.map((value) => `${value}-${num}`)
+const memoize = (fn) => {
+    const cache = {}
+    return (...args) => {
+        const key = JSON.stringify(args)
 
-const addNumberToStringsFactory = (num) => (stringArr) => stringArr.map((value) => `${value}-${num}`)
-const addNumberToStringsV2 = addNumberToStringsFactory(7) // (stringArr) => stringArr.map((value) => `${value}-7`)
+        cache[key] = key in cache ? cache[key] : fn(...args)
 
-const addNumberToStringsV3 = (num, stringArr) => stringArr.map((value) => `${value}-${num}`)
+        return cache[key]
+    }
+}
 
-const arr = ['hi', 'bye', 'new', 'old', 'change', 'go']
+const genNumberArray = (arrayLength, cb) => Array.from(Array(arrayLength), cb)
+const size = 20_000_000
 
-// we can EASILY! predict the outcome result
-console.log(arr)
-console.log('V1', addNumberToStringsV1(arr)[0] === `${arr[0]}-1`)
-console.log('V2', addNumberToStringsV2(arr)[0] === `${arr[0]}-7`)
-console.log('V2 - modified', addNumberToStringsFactory(55)(arr)[0] === `${arr[0]}-55`)
-console.log('V3', addNumberToStringsV3(33, arr)[0] === `${arr[0]}-33`)
+console.time('Fill Array')
+const randomInteger = (num) => Math.floor(Math.random() * num)
+const arr = genNumberArray(size, () => randomInteger(size))
+console.timeEnd('Fill Array')
+
+const indexOfMemoized = memoize(arr.indexOf.bind(arr))
+
+const numToFind = randomInteger(size)
+
+console.time('indexOf - no cached')
+console.log('Index Found: ', indexOfMemoized(numToFind))
+console.timeEnd('indexOf - no cached')
+
+console.log()
+
+console.time('indexOf - cached')
+console.log('Index Found: ', indexOfMemoized(numToFind))
+console.timeEnd('indexOf - cached')
+
+console.log()
+
+if (indexOfMemoized(numToFind) !== -1) {
+    console.log('Found: ', arr[indexOfMemoized(numToFind)])
+} else {
+    console.log(`"${numToFind}" Not Found`)
+}

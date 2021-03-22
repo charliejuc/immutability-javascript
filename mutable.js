@@ -1,17 +1,33 @@
 'use strict'
 
-let num = 1
-const increaseNumber = () => num += 1
+const memoize = (fn) => {
+    const cache = {}
+    return (...args) => {
+        const key = JSON.stringify(args)
 
-const addNumberToStrings = (stringArr) => stringArr.map((value) => `${value}-${num}`)
+        cache[key] = key in cache ? cache[key] : fn(...args)
 
-const arr = ['hi', 'bye', 'new', 'old', 'change', 'go']
+        return cache[key]
+    }
+}
 
-console.log(arr)
-// outcome result depends of "num" value, this value is not available outside this file
-console.log(addNumberToStrings(arr)[0] === `${arr[0]}-1`)
+const genNumberArray = (arrayLength, cb) => Array.from(Array(arrayLength), cb)
+const size = 100
 
-increaseNumber()
-increaseNumber()
-// "num" could have been updated N times in our code, how do we know current value to test if it is working properly?
-console.log(addNumberToStrings(arr)[0] === `${arr[0]}-???`)
+const randomInteger = (num) => Math.floor(Math.random() * num)
+const arr = genNumberArray(size, (_, index) => index + 1)
+
+const indexOfMemoized = memoize(arr.indexOf.bind(arr))
+
+const numToFind = randomInteger(size) + 1
+
+console.log('Index: ', indexOfMemoized(numToFind))
+
+// if we allow array mutation we can't use memoization
+if (arr[indexOfMemoized(numToFind)] in arr) {
+    arr[indexOfMemoized(numToFind)] = Math.floor(arr[indexOfMemoized(numToFind)] / 2)
+}
+
+console.log({numToFind})
+console.log()
+console.log('Found:', `"${arr[indexOfMemoized(numToFind)]}" instead of "${numToFind}" for "${indexOfMemoized(numToFind)}" index`)

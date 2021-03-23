@@ -1,6 +1,6 @@
 'use strict'
 
-let states = {
+let statesHistory = {
     undo: [],
     redo: []
 }
@@ -14,66 +14,41 @@ let state = {
     todos: []
 }
 
-const prependState = (kind, states, state) => ({
-    ...states,
-    [kind]: [state, ...states[kind]]
+const stateWasUpdated = ((state) => (currentState) => {
+    if (state !== currentState) {
+        state = currentState
+        return true
+    }
+
+    return false
+})(state)
+
+console.log('State updated:', stateWasUpdated(state))
+
+const prependState = (kind, statesHistory, state) => ({
+    ...statesHistory,
+    [kind]: [state, ...statesHistory[kind]]
 })
 const appendTodo = (state, todo) => ({
     ...state,
     todos: [...state.todos, todo]
 })
 
-states = prependState('undo', states, state)
+statesHistory = prependState('undo', statesHistory, state)
 state = appendTodo(state, {
     id: 1,
     message: 'Make the bed'
 })
 
 console.log('Save Todo:', state.todos)
+console.log('State updated:', stateWasUpdated(state))
+console.log('State updated:', stateWasUpdated(state))
 
-states = prependState('undo', states, state)
+statesHistory = prependState('undo', statesHistory, state)
 state = appendTodo(state, {
     id: 2,
     message: 'Record the course'
 })
 
 console.log('Save Second Todo:', state.todos)
-
-const stateUndo = (states, index) => ({
-    state: states.undo[index],
-    states: {
-        ...states,
-        undo: [...states.undo.slice(index + 1)]
-    }
-})
-const stateRedo = (states, index) => ({
-    state: states.redo[index],
-    states: {
-        ...states,
-        redo: [...states.redo.slice(index + 1)]
-    }
-})
-
-console.log()
-console.log('UNDO')
-states = prependState('redo', states, state)
-;({state, states} = stateUndo(states, 0))
-
-console.log('First Undo', state.todos)
-
-states = prependState('redo', states, state)
-;({state, states} = stateUndo(states, 0))
-
-console.log('Second Undo', state.todos)
-
-console.log()
-console.log('REDO')
-states = prependState('undo', states, state)
-;({state, states} = stateRedo(states, 0));
-
-console.log('First Redo', state.todos)
-
-states = prependState('undo', states, state)
-;({state, states} = stateRedo(states, 0))
-
-console.log('Second Redo', state.todos)
+console.log('State updated:', stateWasUpdated(state))

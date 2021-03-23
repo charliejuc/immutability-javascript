@@ -1,14 +1,26 @@
 'use strict'
 
-// Referential Transparency
+// Structural Sharing
 
-const a = 4
-const b = 5
+const user = {
+    id: 1,
+    username: 'Mike',
+    address: {
+        street: 'A street',
+        number: 14
+    },
+    profile: {
+        nickname: 'Mikey',
+        image: 'bff7a93.jpg'
+    }
+}
 
-const c = a + b
-// const c = 9
+const updatedUser = {
+    ...user,
+    username: 'mike1234'
+}
 
-const add = (a, b) => a + b
-
-const result = add(2, 1)
-// const result = 3
+console.log('user === updatedUser', user === updatedUser)
+// address and profile have not been duplicated
+console.log('user.address === updatedUser.address', user.address === updatedUser.address)
+console.log('user.profile === updatedUser.profile', user.profile === updatedUser.profile)

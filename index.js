@@ -14,8 +14,16 @@ let state = {
     todos: []
 }
 
-const stateWasUpdated = ((state) => (currentState) => {
-    if (state !== currentState) {
+const stateUserWasUpdated = ((state) => (currentState) => {
+    if (state.user !== currentState.user) {
+        state = currentState
+        return true
+    }
+
+    return false
+})(state)
+const stateTodosWasUpdated = ((state) => (currentState) => {
+    if (state.todos !== currentState.todos) {
         state = currentState
         return true
     }
@@ -23,7 +31,8 @@ const stateWasUpdated = ((state) => (currentState) => {
     return false
 })(state)
 
-console.log('State updated:', stateWasUpdated(state))
+console.log('State user updated:', stateUserWasUpdated(state))
+console.log('State todos updated:', stateTodosWasUpdated(state))
 
 const prependState = (kind, statesHistory, state) => ({
     ...statesHistory,
@@ -41,8 +50,9 @@ state = appendTodo(state, {
 })
 
 console.log('Save Todo:', state.todos)
-console.log('State updated:', stateWasUpdated(state))
-console.log('State updated:', stateWasUpdated(state))
+console.log('State user updated:', stateUserWasUpdated(state))
+console.log('State todos updated:', stateTodosWasUpdated(state))
+console.log('State todos updated:', stateTodosWasUpdated(state))
 
 statesHistory = prependState('undo', statesHistory, state)
 state = appendTodo(state, {
@@ -51,4 +61,5 @@ state = appendTodo(state, {
 })
 
 console.log('Save Second Todo:', state.todos)
-console.log('State updated:', stateWasUpdated(state))
+console.log('State user updated:', stateUserWasUpdated(state))
+console.log('State todos updated:', stateTodosWasUpdated(state))

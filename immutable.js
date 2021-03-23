@@ -1,42 +1,31 @@
 'use strict'
 
-const memoize = (fn) => {
-    const cache = {}
-    return (...args) => {
-        const key = JSON.stringify(args)
-
-        cache[key] = key in cache ? cache[key] : fn(...args)
-
-        return cache[key]
+const users = [
+    {
+        id: 1,
+        username: 'Mike'
+    },
+    {
+        id: 2,
+        username: 'Ana'
+    },
+    {
+        id: 3,
+        username: 'Jane'
     }
-}
+]
+const usersInIds = (ids) => new Promise(
+    (resolve) => setTimeout(
+        () => resolve(users.filter((user) => ids.includes(user.id))),
+        100)
+)
 
-const genNumberArray = (arrayLength, cb) => Array.from(Array(arrayLength), cb)
-const size = 20_000_000
+const ids = [1]
+usersInIds(ids).then(console.log)
 
-console.time('Fill Array')
-const randomInteger = (num) => Math.floor(Math.random() * num)
-const arr = genNumberArray(size, () => randomInteger(size))
-console.timeEnd('Fill Array')
+const fullIds = [
+    ...ids,
+    3
+]
 
-const indexOfMemoized = memoize(arr.indexOf.bind(arr))
-
-const numToFind = randomInteger(size)
-
-console.time('indexOf - no cached')
-console.log('Index Found: ', indexOfMemoized(numToFind))
-console.timeEnd('indexOf - no cached')
-
-console.log()
-
-console.time('indexOf - cached')
-console.log('Index Found: ', indexOfMemoized(numToFind))
-console.timeEnd('indexOf - cached')
-
-console.log()
-
-if (indexOfMemoized(numToFind) !== -1) {
-    console.log('Found: ', arr[indexOfMemoized(numToFind)])
-} else {
-    console.log(`"${numToFind}" Not Found`)
-}
+usersInIds(fullIds).then(console.log)
